@@ -4,305 +4,574 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#4f46e5">
-<title>ارسال فایل · چاپ سریع</title>
+<title>CafeNet — ارسال و چاپ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--pri:#4f46e5;--pri-dark:#4338ca;--bg:#f8fafc;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--mut:#64748b}
+:root{--pri:#4f46e5;--pri-dark:#4338ca;--bg:#f1f5f9;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--mut:#64748b;--ok:#16a34a;--warn:#eab308;--err:#dc2626}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;font-family:Vazirmatn,Tahoma,system-ui,sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
-button{font-family:inherit;cursor:pointer}
-input{font-family:inherit}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+.hide{display:none!important}
 
-/* ---- Customer ---- */
-.c-wrap{max-width:520px;margin:0 auto;padding:16px}
-.c-card{background:var(--card);border-radius:20px;padding:22px;box-shadow:0 10px 34px rgba(15,23,42,.09)}
-.c-card h1{font-size:20px;margin:0 0 6px}
-.c-sub{color:var(--mut);font-size:14px;margin:0 0 18px;line-height:1.7}
+/* ---------- Customer ---------- */
+.c-wrap{max-width:560px;margin:0 auto;padding:16px}
+.c-card{background:#fff;border-radius:20px;padding:24px;box-shadow:0 10px 34px rgba(15,23,42,.09)}
+.c-card h1{font-size:21px;margin:0 0 6px}
+.c-sub{color:var(--mut);font-size:14px;margin:0 0 18px;line-height:1.75}
 .c-label{display:block;font-size:13px;font-weight:700;margin:0 0 6px;color:#334155}
 .c-input{width:100%;padding:14px;border:1.5px solid var(--line);border-radius:12px;font-size:16px;outline:none;background:#fff;transition:.15s}
 .c-input:focus{border-color:var(--pri);box-shadow:0 0 0 3px rgba(79,70,229,.15)}
-.c-drop{margin-top:18px;border:2px dashed #c7d2fe;border-radius:16px;padding:20px;text-align:center;background:#f5f7ff}
-.c-drop .ic{font-size:38px;line-height:1}
+.c-drop{margin-top:16px;border:2px dashed #c7d2fe;border-radius:16px;padding:22px 18px;text-align:center;background:#f5f7ff;transition:.2s}
+.c-drop.drag{background:#e0e7ff;border-color:#6366f1}
+.c-drop .ic{font-size:36px;line-height:1}
 .c-drop .t{font-weight:700;font-size:15px;margin-top:6px}
 .c-drop .s{font-size:12px;color:var(--mut);margin-top:4px}
-.c-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:15px;border:0;border-radius:13px;font-size:16px;font-weight:700;margin-top:10px;transition:.15s}
+.c-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:14px;border:0;border-radius:13px;font-size:15px;font-weight:700;margin-top:10px;transition:.15s}
 .c-btn:active{transform:scale(.98)}
+.c-btn:disabled{opacity:.5;cursor:not-allowed}
 .c-btn.sec{background:#eef2ff;color:var(--pri-dark)}
 .c-btn.pri{background:var(--pri);color:#fff}
-.c-btn.pri:disabled{opacity:.45}
-.c-preview{margin-top:16px;display:none;text-align:center}
-.c-preview img{max-width:100%;max-height:240px;border-radius:12px;border:1px solid var(--line)}
-.c-preview .fn{font-size:13px;color:#475569;margin-top:6px;word-break:break-all}
-.c-bar{height:7px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:14px;display:none}
-.c-bar i{display:block;height:100%;width:0;background:var(--pri);transition:width .25s}
+.c-btn.pri:hover:not(:disabled){background:var(--pri-dark)}
+.c-files{margin-top:16px}
+.c-file{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;background:#fff}
+.c-file img{width:52px;height:52px;object-fit:cover;border-radius:8px;background:#e2e8f0;flex:0 0 auto}
+.c-file .ph{width:52px;height:52px;display:flex;align-items:center;justify-content:center;font-size:24px;background:#e2e8f0;border-radius:8px;flex:0 0 auto}
+.c-file .info{flex:1;min-width:0}
+.c-file .nm{font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.c-file .sz{font-size:11px;color:var(--mut);margin-top:2px}
+.c-file .rm{width:32px;height:32px;border:0;border-radius:8px;background:#fef2f2;color:#b91c1c;font-weight:700;flex:0 0 auto}
+.c-bar{height:8px;background:var(--line);border-radius:99px;overflow:hidden;margin-top:12px;display:none}
+.c-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#6366f1,#8b5cf6);transition:width .2s}
+.c-upload-info{font-size:12px;color:var(--mut);text-align:center;margin-top:6px;display:none}
+.c-err{display:none;margin-top:12px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.6}
 .c-ok{display:none;text-align:center;padding:24px 0}
-.c-ok .tick{font-size:60px;line-height:1}
-.c-ok h2{margin:10px 0 6px;font-size:19px}
-.c-ok p{color:var(--mut);font-size:14px;margin:0 0 18px}
-.c-err{display:none;margin-top:12px;background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.5}
+.c-ok .tick{font-size:64px;line-height:1;animation:pop .4s ease-out}
+@keyframes pop{0%{transform:scale(0)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
+.c-ok h2{margin:10px 0 6px;font-size:20px}
+.c-ok p{color:var(--mut);font-size:14px;margin:0 0 18px;line-height:1.7}
+.c-tracking{background:#f0fdf4;border:1px solid #bbf7d0;color:#166534;padding:10px;border-radius:10px;font-size:13px;margin-bottom:16px;font-family:monospace}
 
-/* ---- Owner ---- */
+/* ---------- Owner ---------- */
 .o-app{height:100vh;display:flex;flex-direction:column;overflow:hidden}
-.o-top{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px;flex:0 0 auto}
-.o-top strong{font-size:15px}
-.o-badge{background:#eef2ff;color:var(--pri-dark);font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px}
-.o-dot{width:9px;height:9px;border-radius:50%;background:#cbd5e1;transition:.2s}
+.o-top{height:58px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;padding:0 14px;flex:0 0 auto;flex-wrap:nowrap;overflow-x:auto}
+.o-top strong{font-size:15px;white-space:nowrap}
+.o-badge{background:#eef2ff;color:var(--pri-dark);font-size:12px;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.o-dot{width:9px;height:9px;border-radius:50%;background:#cbd5e1;transition:.2s;flex:0 0 auto}
 .o-dot.on{background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.2)}
 .o-spacer{flex:1}
-.o-tbtn{padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:13px;font-weight:600;color:#334155}
+.o-tbtn{padding:7px 11px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:13px;font-weight:600;color:#334155;white-space:nowrap}
 .o-tbtn:hover{background:#f8fafc}
+.o-tbtn.on{background:#eef2ff;color:var(--pri-dark);border-color:#c7d2fe}
 .o-wrap{flex:1;display:flex;min-height:0}
-.o-list{width:290px;flex:0 0 auto;background:#fff;border-left:1px solid var(--line);overflow-y:auto;padding:10px}
-.o-item{display:flex;gap:10px;padding:9px;border-radius:11px;cursor:pointer;border:1.5px solid transparent;margin-bottom:6px;align-items:center;transition:.12s}
+.o-side{width:320px;flex:0 0 auto;background:#fff;border-left:1px solid var(--line);display:flex;flex-direction:column;min-height:0}
+.o-search{padding:10px;border-bottom:1px solid var(--line)}
+.o-search input{width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:9px;font-size:13px;outline:none}
+.o-search input:focus{border-color:var(--pri)}
+.o-filters{display:flex;gap:5px;padding:8px 10px;border-bottom:1px solid var(--line);overflow-x:auto;flex:0 0 auto}
+.o-chip{padding:5px 11px;border:1px solid var(--line);background:#fff;border-radius:99px;font-size:12px;font-weight:600;color:#475569;white-space:nowrap;flex:0 0 auto}
+.o-chip.active{background:var(--pri);color:#fff;border-color:var(--pri)}
+.o-list{flex:1;overflow-y:auto;padding:8px}
+.o-item{display:flex;gap:10px;padding:9px;border-radius:11px;cursor:pointer;border:1.5px solid transparent;margin-bottom:6px;align-items:center;transition:.12s;position:relative}
 .o-item:hover{background:#f8fafc}
 .o-item.sel{background:#eef2ff;border-color:#c7d2fe}
+.o-item.checked{background:#f0fdf4;border-color:#86efac}
+.o-item .chk{width:20px;height:20px;border:2px solid #cbd5e1;border-radius:6px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#fff;font-size:13px;color:#fff}
+.o-item.checked .chk{background:var(--ok);border-color:var(--ok)}
 .o-item img,.o-item .ph{width:46px;height:46px;border-radius:8px;object-fit:cover;background:#e2e8f0;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:20px}
 .o-item .info{min-width:0;flex:1}
-.o-item .nm{font-weight:700;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.o-item .tm{font-size:11px;color:var(--mut);margin-top:2px}
-.o-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0}
-.o-empty{margin:auto;color:var(--mut);font-size:14px;text-align:center;padding:20px;line-height:1.8}
+.o-item .nm{font-weight:700;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+.o-item .tm{font-size:11px;color:var(--mut);margin-top:2px;display:flex;align-items:center;gap:6px}
+.o-status{font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px}
+.o-status.new{background:#fef3c7;color:#92400e}
+.o-status.printing{background:#dbeafe;color:#1e40af}
+.o-status.done{background:#dcfce7;color:#166534}
+.o-main{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;background:#e9edf3}
+.o-empty{margin:auto;color:var(--mut);font-size:14px;text-align:center;padding:24px;line-height:1.8}
+.o-empty .ic{font-size:52px;margin-bottom:8px}
 .o-editor{display:flex;flex-direction:column;height:100%;min-height:0}
-.o-tools{background:#fff;border-bottom:1px solid var(--line);padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;flex:0 0 auto}
-.o-grp{display:flex;align-items:center;gap:6px}
-.o-grp label{font-size:12px;color:#475569;font-weight:600;display:flex;align-items:center;gap:6px}
-input[type=range]{width:88px;accent-color:var(--pri)}
-.o-btn{padding:8px 12px;border:1px solid var(--line);background:#fff;border-radius:9px;font-size:13px;font-weight:600;color:#334155;white-space:nowrap}
+.o-tools{background:#fff;border-bottom:1px solid var(--line);padding:8px 12px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;flex:0 0 auto;max-height:96px;overflow-y:auto}
+.o-grp{display:flex;align-items:center;gap:5px}
+.o-grp label{font-size:11.5px;color:#475569;font-weight:600;display:flex;align-items:center;gap:5px}
+input[type=range]{width:76px;accent-color:var(--pri)}
+.o-btn{padding:6px 10px;border:1px solid var(--line);background:#fff;border-radius:8px;font-size:12.5px;font-weight:600;color:#334155;white-space:nowrap}
 .o-btn:hover{background:#f8fafc}
 .o-btn.pri{background:var(--pri);color:#fff;border-color:var(--pri)}
 .o-btn.pri:hover{background:var(--pri-dark)}
 .o-btn.danger{color:#b91c1c;border-color:#fecaca}
 .o-btn.danger:hover{background:#fef2f2}
 .o-btn.on{background:var(--pri-dark);color:#fff;border-color:var(--pri-dark)}
-select{padding:8px;border:1px solid var(--line);border-radius:9px;font-size:13px;background:#fff}
-.o-stage{flex:1;overflow:auto;padding:16px;display:flex;align-items:center;justify-content:center;min-height:0;background:#e9edf3}
+.o-btn:disabled{opacity:.4;cursor:not-allowed}
+select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;font-size:12.5px;background:#fff}
+.o-stage{flex:1;overflow:auto;padding:16px;display:flex;align-items:center;justify-content:center;min-height:0}
 .o-cwrap{position:relative;max-width:100%;max-height:100%;display:inline-block;line-height:0}
-#view{display:block;max-width:100%;max-height:calc(100vh - 190px);width:auto;height:auto;box-shadow:0 6px 24px rgba(15,23,42,.18);background:#fff;touch-action:none}
+#view{display:block;max-width:100%;max-height:calc(100vh - 220px);width:auto;height:auto;box-shadow:0 6px 24px rgba(15,23,42,.18);background:#fff;touch-action:none}
 .cropbox{position:absolute;border:2px dashed var(--pri);background:rgba(79,70,229,.12);display:none;pointer-events:none}
-.o-nofile{padding:40px;text-align:center;color:var(--mut)}
+.o-nofile{padding:40px;text-align:center;color:var(--mut);margin:auto}
 .o-nofile .ic{font-size:52px}
-.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;padding:12px 18px;border-radius:12px;font-size:14px;transition:.3s;z-index:99;opacity:0;max-width:90vw;text-align:center}
+
+/* toast */
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%) translateY(80px);background:#0f172a;color:#fff;padding:12px 18px;border-radius:12px;font-size:13.5px;transition:.3s;z-index:9999;opacity:0;max-width:90vw;text-align:center;box-shadow:0 8px 24px rgba(0,0,0,.25)}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
-@media(max-width:820px){
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(15,23,42,.55);display:none;align-items:center;justify-content:center;z-index:9000;padding:16px}
+.modal.on{display:flex}
+.modal-card{background:#fff;border-radius:18px;padding:22px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.modal-card h3{margin:0 0 14px;font-size:17px}
+.modal-card label{display:block;font-size:12.5px;font-weight:600;color:#334155;margin:10px 0 5px}
+.modal-card select,.modal-card input{width:100%;padding:10px;border:1.5px solid var(--line);border-radius:9px;font-size:14px}
+.modal-actions{display:flex;gap:8px;margin-top:18px}
+.modal-actions button{flex:1;padding:11px;border:0;border-radius:10px;font-size:14px;font-weight:700}
+.modal-actions .cancel{background:#f1f5f9;color:#475569}
+.modal-actions .ok{background:var(--pri);color:#fff}
+
+/* responsive */
+@media(max-width:900px){
   .o-wrap{flex-direction:column}
-  .o-list{width:100%;height:150px;border-left:0;border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:8px}
-  .o-item{width:200px;flex:0 0 auto;margin:0}
+  .o-side{width:100%;height:180px;border-left:0;border-bottom:1px solid var(--line)}
+  .o-search{padding:6px 8px}
+  .o-list{display:flex;gap:6px;overflow-x:auto;overflow-y:hidden;padding:6px}
+  .o-item{width:210px;flex:0 0 auto;margin:0}
+  .o-tools{max-height:none}
 }
 </style>
 </head>
 <body>
 <div id="app"></div>
+<div class="toast" id="toast"></div>
+
+<!-- Batch print modal -->
+<div class="modal" id="batchModal">
+  <div class="modal-card">
+    <h3>🖨 چاپ دسته‌ای</h3>
+    <label>تعداد عکس در هر صفحه A4</label>
+    <select id="bmPerPage">
+      <option value="1">۱ عدد (بزرگ)</option>
+      <option value="2" selected>۲ عدد (نصف)</option>
+      <option value="4">۴ عدد (کوچک)</option>
+      <option value="6">۶ عدد (خیلی کوچک)</option>
+      <option value="9">۹ عدد (مینی)</option>
+    </select>
+    <label>تعداد کپی از هر تصویر</label>
+    <input type="number" id="bmCopies" value="1" min="1" max="20">
+    <label>حاشیه</label>
+    <select id="bmGap">
+      <option value="2">نازک (۲ میلی‌متر)</option>
+      <option value="4" selected>متوسط (۴ میلی‌متر)</option>
+      <option value="8">ضخیم (۸ میلی‌متر)</option>
+    </select>
+    <div class="modal-actions">
+      <button class="cancel" onclick="document.getElementById('batchModal').classList.remove('on')">لغو</button>
+      <button class="ok" id="bmGo">چاپ کن</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ============================================
-//  CONFIG — این بخش را عوض کنید
-// ============================================
+/* =====================================================
+   CONFIG
+   ===================================================== */
 const CONFIG = {
-  // topic یکتا و تصادفی — هرچه طولانی‌تر بهتر
-  TOPIC: 'printshop-a7x9k2m3q8v1',
+  TOPIC: 'printshop-a7x9k2m3q8v1',   // ⚠️ عوضش کن!
   NTFY: 'https://ntfy.sh',
-  OWNER_PASSWORD: 'admin123',
+  OWNER_PASSWORD: 'admin123',          // ⚠️ عوضش کن!
   MAX_MB: 15,
+  MAX_FILES: 8,
 };
 
-// ---------- Helpers ----------
+/* =====================================================
+   UTILITIES
+   ===================================================== */
 const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const b64enc = s => btoa(unescape(encodeURIComponent(s)));
 const b64dec = s => { try{ return decodeURIComponent(escape(atob(s))); }catch(e){ return s; } };
 const fmtTime = ts => {
-  const d = new Date(ts*1000);
-  const p = n => n<10?'0'+n:''+n;
-  return p(d.getHours())+':'+p(d.getMinutes())+' · '+p(d.getDate())+'/'+(d.getMonth()+1);
+  const d = new Date(ts*1000), p = n => n<10?'0'+n:''+n;
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  return p(d.getHours())+':'+p(d.getMinutes())+(isToday?'':' · '+p(d.getDate())+'/'+(d.getMonth()+1));
 };
-function toast(msg){
-  const t = $('#toast'); if(!t) return;
-  t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 2600);
-}
-function isOwnerMode(){ return location.hash.indexOf('owner') !== -1; }
+const fmtSize = bytes => bytes < 1024 ? bytes+' B'
+  : bytes < 1048576 ? (bytes/1024).toFixed(0)+' KB'
+  : (bytes/1048576).toFixed(2)+' MB';
+const uid = () => 'x' + Math.random().toString(36).slice(2,9);
 
-// ============================================
-//  CUSTOMER PAGE
-// ============================================
+let toastTimer;
+function toast(msg, kind){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.style.background = kind === 'ok' ? '#15803d' : kind === 'err' ? '#b91c1c' : '#0f172a';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function beep(){
+  try{
+    const AC = window.AudioContext || window.webkitAudioContext;
+    const ctx = new AC();
+    [880, 1175].forEach((freq, i) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.frequency.value = freq; osc.type = 'sine';
+      const t = ctx.currentTime + i * 0.15;
+      gain.gain.setValueAtTime(0.001, t);
+      gain.gain.exponentialRampToValueAtTime(0.25, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+      osc.start(t); osc.stop(t + 0.3);
+    });
+  }catch(e){}
+}
+
+/* فشرده‌سازی عکس */
+function compressImage(file, maxDim = 2400, quality = 0.85){
+  return new Promise(resolve => {
+    if(!file.type.startsWith('image/') || file.type === 'image/gif') { resolve(file); return; }
+    const img = new Image();
+    img.onload = () => {
+      let w = img.naturalWidth, h = img.naturalHeight;
+      if(Math.max(w, h) > maxDim){
+        const s = maxDim / Math.max(w, h);
+        w = Math.round(w * s); h = Math.round(h * s);
+      }
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.imageSmoothingQuality = 'high';
+      ctx.drawImage(img, 0, 0, w, h);
+      c.toBlob(blob => {
+        if(blob && blob.size < file.size){
+          resolve(new File([blob], file.name.replace(/\.\w+$/, '') + '.jpg', {type:'image/jpeg'}));
+        } else {
+          resolve(file);
+        }
+      }, 'image/jpeg', quality);
+    };
+    img.onerror = () => resolve(file);
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+function isOwnerMode(){ return location.hash.includes('owner'); }
+
+/* =====================================================
+   CUSTOMER PAGE
+   ===================================================== */
 function renderCustomer(){
-  document.title = 'ارسال فایل · چاپ سریع';
+  document.title = 'ارسال فایل · CafeNet';
   $('#app').innerHTML = `
     <div class="c-wrap">
       <div class="c-card">
         <div id="cForm">
-          <h1>ارسال عکس / فایل</h1>
-          <p class="c-sub">نام خود را وارد کنید، سپس عکس یا فایلی که می‌خواهید چاپ شود را بارگذاری کنید.</p>
+          <h1>📤 ارسال عکس برای چاپ</h1>
+          <p class="c-sub">نام خود را وارد کنید و عکس یا فایلی که می‌خواهید چاپ شود را بارگذاری کنید.</p>
+
           <label class="c-label" for="cName">نام و نام خانوادگی</label>
           <input class="c-input" id="cName" type="text" placeholder="مثلاً: علی رضایی" autocomplete="name">
-          <div class="c-drop">
+
+          <div class="c-drop" id="cDrop">
             <div class="ic">📷</div>
             <div class="t">عکس یا فایل خود را انتخاب کنید</div>
-            <div class="s">عکس، PDF یا فایل تا ${CONFIG.MAX_MB} مگابایت</div>
-            <button class="c-btn sec" id="cPick">انتخاب از گالری</button>
-            <button class="c-btn sec" id="cCam">گرفتن عکس با دوربین</button>
+            <div class="s">عکس، PDF یا فایل · تا ${CONFIG.MAX_MB} مگابایت</div>
+            <button class="c-btn sec" id="cPick">📁 انتخاب از گالری</button>
+            <button class="c-btn sec" id="cCam">📸 گرفتن عکس</button>
           </div>
-          <div class="c-preview" id="cPrev">
-            <img id="cImg" alt="">
-            <div class="fn" id="cFn"></div>
-          </div>
+
+          <div class="c-files" id="cFiles"></div>
+
           <div class="c-bar" id="cBar"><i id="cBarI"></i></div>
+          <div class="c-upload-info" id="cInfo"></div>
           <div class="c-err" id="cErr"></div>
-          <button class="c-btn pri" id="cSend" disabled>ارسال</button>
+
+          <button class="c-btn pri" id="cSend" disabled>🚀 ارسال</button>
         </div>
+
         <div class="c-ok" id="cOk">
           <div class="tick">✅</div>
           <h2>با موفقیت ارسال شد</h2>
-          <p>فایل شما دریافت شد. لطفاً منتظر بمانید تا چاپ شود.</p>
-          <button class="c-btn sec" id="cAgain">ارسال فایل دیگر</button>
+          <p>فایل شما دریافت شد و در صف چاپ قرار گرفت.</p>
+          <div class="c-tracking" id="cTrack"></div>
+          <button class="c-btn sec" id="cAgain">📤 ارسال فایل دیگر</button>
         </div>
       </div>
     </div>
-    <input type="file" id="cFile" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt" hidden>
+    <input type="file" id="cFile" accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx,.txt" multiple hidden>
     <input type="file" id="cCamIn" accept="image/*" capture="environment" hidden>
-    <div class="toast" id="toast"></div>
   `;
   wireCustomer();
 }
 
 function wireCustomer(){
   const nameEl = $('#cName'), fileEl = $('#cFile'), camEl = $('#cCamIn');
-  const prev = $('#cPrev'), img = $('#cImg'), fnEl = $('#cFn');
-  const send = $('#cSend'), bar = $('#cBar'), barI = $('#cBarI');
+  const filesEl = $('#cFiles'), sendBtn = $('#cSend');
+  const bar = $('#cBar'), barI = $('#cBarI'), info = $('#cInfo');
   const errEl = $('#cErr'), form = $('#cForm'), ok = $('#cOk');
-  let chosen = null, blobUrl = null;
+  const dropZone = $('#cDrop');
+
+  let files = [];  // {id, file, thumb}
 
   const showError = m => { errEl.textContent = m; errEl.style.display = 'block'; };
   const clearError = () => { errEl.style.display = 'none'; };
 
-  $('#cPick').onclick = ()=> fileEl.click();
-  $('#cCam').onclick  = ()=> camEl.click();
-
-  function choose(f){
-    if(!f) return;
-    if(f.size > CONFIG.MAX_MB * 1024 * 1024){
-      showError(`حجم فایل بیشتر از ${CONFIG.MAX_MB} مگابایت است.`);
-      return;
-    }
-    clearError();
-    chosen = f;
-    if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl = null; }
-    prev.style.display = 'block';
-    fnEl.textContent = f.name + ' (' + (f.size/1024/1024).toFixed(2) + ' مگابایت)';
-    if((f.type||'').indexOf('image/') === 0){
-      blobUrl = URL.createObjectURL(f);
-      img.src = blobUrl;
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none'; img.removeAttribute('src');
-    }
-    send.disabled = false;
+  function updateUI(){
+    filesEl.innerHTML = '';
+    files.forEach(f => {
+      const div = document.createElement('div');
+      div.className = 'c-file';
+      if(f.thumb){
+        div.innerHTML = `<img src="${f.thumb}" alt=""><div class="info"><div class="nm">${esc(f.file.name)}</div><div class="sz">${fmtSize(f.file.size)}</div></div><button class="rm" data-id="${f.id}">✕</button>`;
+      } else {
+        div.innerHTML = `<div class="ph">📄</div><div class="info"><div class="nm">${esc(f.file.name)}</div><div class="sz">${fmtSize(f.file.size)}</div></div><button class="rm" data-id="${f.id}">✕</button>`;
+      }
+      filesEl.appendChild(div);
+    });
+    filesEl.querySelectorAll('.rm').forEach(b => {
+      b.onclick = () => {
+        const i = files.findIndex(x => x.id === b.dataset.id);
+        if(i >= 0){ if(files[i].thumb) URL.revokeObjectURL(files[i].thumb); files.splice(i,1); updateUI(); }
+      };
+    });
+    sendBtn.disabled = files.length === 0;
+    sendBtn.textContent = files.length > 0 ? `🚀 ارسال ${files.length} فایل` : '🚀 ارسال';
   }
-  fileEl.onchange = ()=> choose(fileEl.files[0]);
-  camEl.onchange  = ()=> choose(camEl.files[0]);
+
+  async function addFiles(list){
+    clearError();
+    const arr = Array.from(list || []);
+    for(const file of arr){
+      if(files.length >= CONFIG.MAX_FILES){ showError(`حداکثر ${CONFIG.MAX_FILES} فایل`); break; }
+      if(file.size > CONFIG.MAX_MB * 1024 * 1024){ showError(`«${file.name}» بزرگ‌تر از ${CONFIG.MAX_MB}MB است`); continue; }
+      const thumb = file.type.startsWith('image/') ? URL.createObjectURL(file) : null;
+      files.push({ id: uid(), file, thumb });
+      updateUI();
+    }
+  }
+
+  $('#cPick').onclick = () => fileEl.click();
+  $('#cCam').onclick  = () => camEl.click();
+  fileEl.onchange = () => { addFiles(fileEl.files); fileEl.value=''; };
+  camEl.onchange  = () => { addFiles(camEl.files); camEl.value=''; };
   nameEl.oninput  = clearError;
 
-  send.onclick = ()=>{
+  // Drag & drop
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag');
+    addFiles(e.dataTransfer.files);
+  });
+
+  /* ---------- ارسال ---------- */
+  sendBtn.onclick = async () => {
     const name = nameEl.value.trim();
     if(!name){ showError('لطفاً نام خود را وارد کنید.'); nameEl.focus(); return; }
-    if(!chosen){ showError('لطفاً یک فایل انتخاب کنید.'); return; }
+    if(!files.length){ showError('لطفاً حداقل یک فایل انتخاب کنید.'); return; }
 
-    send.disabled = true; send.textContent = 'در حال ارسال...';
-    bar.style.display = 'block'; barI.style.width = '0'; clearError();
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'در حال آماده‌سازی...';
+    clearError();
+    bar.style.display = 'block'; barI.style.width = '0';
+    info.style.display = 'block'; info.textContent = 'در حال فشرده‌سازی عکس‌ها...';
 
-    const xhr = new XMLHttpRequest();
-    xhr.open('PUT', CONFIG.NTFY + '/' + CONFIG.TOPIC);
-    xhr.setRequestHeader('Title', 'b64:' + b64enc(name));
-    xhr.setRequestHeader('Message', 'new');
-    xhr.setRequestHeader('Filename', chosen.name);
-    xhr.setRequestHeader('Tags', 'printer');
-
-    xhr.upload.onprogress = e => {
-      if(e.lengthComputable) barI.style.width = Math.round(e.loaded/e.total*100) + '%';
-    };
-    xhr.onload = ()=>{
-      bar.style.display = 'none';
-      if(xhr.status >= 200 && xhr.status < 300){
-        form.style.display = 'none'; ok.style.display = 'block';
-      } else {
-        showError('خطا در ارسال (کد ' + xhr.status + '). دوباره تلاش کنید.');
-        send.disabled = false; send.textContent = 'ارسال'; barI.style.width = '0';
+    try{
+      // آماده‌سازی: فشرده‌سازی عکس‌ها
+      const prepared = [];
+      for(let i = 0; i < files.length; i++){
+        info.textContent = `فشرده‌سازی ${i+1} از ${files.length}...`;
+        const compressed = await compressImage(files[i].file);
+        prepared.push(compressed);
       }
-    };
-    xhr.onerror = ()=>{
+
+      // آپلود هر فایل
+      const tracking = [];
+      for(let i = 0; i < prepared.length; i++){
+        info.textContent = `آپلود ${i+1} از ${prepared.length}...`;
+        const result = await sendOneFile(name, prepared[i], (pct) => {
+          const total = ((i + pct/100) / prepared.length) * 100;
+          barI.style.width = total.toFixed(0) + '%';
+        });
+        tracking.push(result.id);
+      }
+
+      barI.style.width = '100%';
+      setTimeout(() => {
+        form.style.display = 'none';
+        ok.style.display = 'block';
+        const trackText = tracking.length === 1
+          ? `کد رهگیری: ${tracking[0].slice(0, 8)}`
+          : `کد رهگیری: ${tracking.map(t => t.slice(0,6)).join(' · ')}`;
+        $('#cTrack').textContent = trackText;
+      }, 400);
+
+    }catch(err){
+      console.error(err);
       bar.style.display = 'none';
-      showError('اتصال برقرار نشد. اتصال اینترنت را بررسی کنید.');
-      send.disabled = false; send.textContent = 'ارسال';
-    };
-    xhr.send(chosen);
+      info.style.display = 'none';
+      showError(err.message || 'خطا در ارسال. اتصال اینترنت را بررسی کنید.');
+      sendBtn.disabled = false;
+      sendBtn.textContent = files.length > 0 ? `🚀 ارسال ${files.length} فایل` : '🚀 ارسال';
+    }
   };
 
-  $('#cAgain').onclick = ()=>{
-    chosen = null;
-    if(blobUrl){ URL.revokeObjectURL(blobUrl); blobUrl = null; }
-    fileEl.value=''; camEl.value='';
-    prev.style.display='none';
-    send.disabled=true; send.textContent='ارسال';
-    barI.style.width='0';
-    ok.style.display='none'; form.style.display='block';
-    nameEl.value=''; nameEl.focus();
+  /* ---------- آپلود یک فایل به ntfy ---------- */
+  function sendOneFile(name, file, onProgress){
+    return new Promise((resolve, reject) => {
+      // ✅ رفع باگ: استفاده از query param به‌جای header (header فقط ASCII قبول می‌کند)
+      const qs = new URLSearchParams();
+      qs.set('title', name.slice(0, 40));
+      qs.set('message', JSON.stringify({ name: name, size: file.size, type: file.type }));
+      qs.set('filename', file.name || 'file');
+      qs.set('tags', 'printer');
+
+      const url = `${CONFIG.NTFY}/${CONFIG.TOPIC}?${qs.toString()}`;
+      const xhr = new XMLHttpRequest();
+      xhr.open('PUT', url);
+
+      xhr.upload.onprogress = e => {
+        if(e.lengthComputable && onProgress) onProgress((e.loaded/e.total)*100);
+      };
+      xhr.onload = () => {
+        if(xhr.status >= 200 && xhr.status < 300){
+          try{
+            const res = JSON.parse(xhr.responseText);
+            resolve({ id: res.id || uid() });
+          }catch(e){ resolve({ id: uid() }); }
+        } else if(xhr.status === 413){
+          reject(new Error('فایل خیلی بزرگ است'));
+        } else if(xhr.status === 429){
+          reject(new Error('محدودیت ارسال. کمی صبر کنید.'));
+        } else {
+          reject(new Error(`خطا در سرور (${xhr.status})`));
+        }
+      };
+      xhr.onerror = () => reject(new Error('اتصال برقرار نشد. اینترنت را بررسی کنید.'));
+      xhr.timeout = 90000;
+      xhr.ontimeout = () => reject(new Error('زمان ارسال تمام شد.'));
+      xhr.send(file);
+    });
+  }
+
+  /* ---------- ارسال دوباره ---------- */
+  $('#cAgain').onclick = () => {
+    files.forEach(f => f.thumb && URL.revokeObjectURL(f.thumb));
+    files = [];
+    updateUI();
+    bar.style.display = 'none'; barI.style.width = '0';
+    info.style.display = 'none';
+    ok.style.display = 'none'; form.style.display = 'block';
+    nameEl.value = ''; nameEl.focus();
   };
 }
 
-// ============================================
-//  OWNER PAGE
-// ============================================
+/* =====================================================
+   OWNER PAGE
+   ===================================================== */
+const STORE = {
+  get statuses(){ try{ return JSON.parse(localStorage.getItem('shop_statuses') || '{}'); }catch(e){ return {}; } },
+  set statuses(v){ localStorage.setItem('shop_statuses', JSON.stringify(v)); },
+  get settings(){ try{ return JSON.parse(localStorage.getItem('shop_settings') || '{"beep":true}'); }catch(e){ return {beep:true}; } },
+  set settings(v){ localStorage.setItem('shop_settings', JSON.stringify(v)); },
+};
+
 function renderOwner(){
-  document.title = 'پنل چاپ';
+  document.title = 'پنل چاپ · CafeNet';
+  const settings = STORE.settings;
   $('#app').innerHTML = `
     <div class="o-app">
       <div class="o-top">
-        <strong>پنل چاپ</strong>
+        <strong>🖨 پنل چاپ</strong>
         <span class="o-badge" id="oCount">0</span>
-        <span class="o-dot" id="oDot" title="اتصال زنده"></span>
+        <span class="o-dot" id="oDot"></span>
         <div class="o-spacer"></div>
-        <button class="o-tbtn" id="oRefresh">به‌روزرسانی</button>
+        <button class="o-tbtn ${settings.beep?'on':''}" id="oBeep" title="صدای اعلان">${settings.beep?'🔔':'🔕'}</button>
+        <button class="o-tbtn" id="oBatch" title="چاپ دسته‌ای">🖨 دسته‌ای</button>
+        <button class="o-tbtn" id="oRefresh">↻</button>
         <button class="o-tbtn" id="oLogout">خروج</button>
       </div>
       <div class="o-wrap">
-        <aside class="o-list" id="oList"></aside>
+        <aside class="o-side">
+          <div class="o-search">
+            <input type="search" id="oSearch" placeholder="🔍 جستجو بر اساس نام...">
+          </div>
+          <div class="o-filters">
+            <button class="o-chip active" data-filter="all">همه</button>
+            <button class="o-chip" data-filter="new">جدید</button>
+            <button class="o-chip" data-filter="printing">در حال چاپ</button>
+            <button class="o-chip" data-filter="done">چاپ شده</button>
+          </div>
+          <div class="o-list" id="oList"></div>
+        </aside>
         <main class="o-main">
-          <div class="o-empty" id="oEmpty">در انتظار فایل‌های جدید…<br><small style="font-size:12px">به‌محض ارسال توسط مشتری، اینجا ظاهر می‌شود.</small></div>
-          <div class="o-editor" id="oEditor" style="display:none">
+          <div class="o-empty" id="oEmpty">
+            <div class="ic">📭</div>
+            در انتظار فایل‌های جدید…<br>
+            <small>به‌محض ارسال توسط مشتری، اینجا ظاهر می‌شود.</small>
+          </div>
+          <div class="o-editor hide" id="oEditor">
             <div class="o-tools">
-              <div class="o-grp"><button class="o-btn" id="oRotL">↺ ۹۰°</button><button class="o-btn" id="oRotR">↻ ۹۰°</button></div>
-              <div class="o-grp"><label>کجی <input type="range" id="sAngle" min="-25" max="25" value="0" step="0.2"></label></div>
-              <div class="o-grp"><label>بزرگ‌نمایی <input type="range" id="sZoom" min="0.2" max="2" value="1" step="0.01"></label></div>
-              <div class="o-grp"><label>روشنایی <input type="range" id="sBright" min="50" max="150" value="100"></label></div>
-              <div class="o-grp"><label>کنتراست <input type="range" id="sContrast" min="50" max="150" value="100"></label></div>
-              <div class="o-grp"><button class="o-btn" id="oCrop">✂ برش</button><button class="o-btn" id="oApply">✔ اعمال</button><button class="o-btn" id="oReset">بازگشت</button></div>
               <div class="o-grp">
-                <select id="oPrintMode"><option value="fill">چاپ: پر کردن صفحه</option><option value="actual">چاپ: اندازه اصلی</option></select>
+                <button class="o-btn" id="oRotL" title="چرخش ۹۰ درجه چپ">↺</button>
+                <button class="o-btn" id="oRotR" title="چرخش ۹۰ درجه راست">↻</button>
+              </div>
+              <div class="o-grp"><label>کجی <input type="range" id="sAngle" min="-25" max="25" value="0" step="0.2"></label></div>
+              <div class="o-grp"><label>بزرگ‌نمایی <input type="range" id="sZoom" min="0.3" max="2" value="1" step="0.01"></label></div>
+              <div class="o-grp"><label>روشنایی <input type="range" id="sBright" min="40" max="170" value="100"></label></div>
+              <div class="o-grp"><label>کنتراست <input type="range" id="sContrast" min="40" max="170" value="100"></label></div>
+              <div class="o-grp">
+                <select id="oFilter">
+                  <option value="none">بدون فیلتر</option>
+                  <option value="grayscale(100%)">سیاه و سفید</option>
+                  <option value="sepia(100%)">سِپیا</option>
+                  <option value="contrast(150%) saturate(0.8)">متن واضح</option>
+                  <option value="brightness(105%) contrast(110%) saturate(115%)">شارپ</option>
+                </select>
+              </div>
+              <div class="o-grp">
+                <button class="o-btn" id="oCrop">✂ برش</button>
+                <button class="o-btn" id="oApply">✔ اعمال</button>
+                <button class="o-btn" id="oReset">بازگشت</button>
+              </div>
+              <div class="o-grp">
+                <select id="oStatusSel">
+                  <option value="new">جدید</option>
+                  <option value="printing">در حال چاپ</option>
+                  <option value="done">چاپ شده</option>
+                </select>
                 <button class="o-btn pri" id="oPrint">🖨 چاپ</button>
-                <button class="o-btn" id="oDownload">⬇ دانلود</button>
-                <button class="o-btn danger" id="oDel">حذف</button>
+                <button class="o-btn" id="oDownload">⬇</button>
+                <button class="o-btn danger" id="oDel">🗑</button>
               </div>
             </div>
             <div class="o-stage" id="oStage">
               <div class="o-cwrap"><canvas id="view"></canvas><div class="cropbox" id="cropbox"></div></div>
             </div>
           </div>
-          <div class="o-nofile" id="oNofile" style="display:none">
+          <div class="o-nofile hide" id="oNofile">
             <div class="ic">📄</div>
             <p id="oNofileTxt">این فایل قابل ویرایش نیست</p>
             <a class="o-btn pri" id="oOpenRaw" target="_blank" style="display:inline-block;text-decoration:none;padding:10px 18px">باز کردن فایل</a>
-            <button class="o-btn" id="oPrintRaw" style="padding:10px 18px">چاپ فایل</button>
+            <button class="o-btn" id="oPrintRaw" style="padding:10px 18px;margin-top:8px">چاپ فایل</button>
           </div>
         </main>
       </div>
     </div>
-    <div class="toast" id="toast"></div>
   `;
   wireOwner();
 }
 
 function wireOwner(){
-  const S = { items: [], current: null, base: null, orig: null, rot: 0, free: 0, zoom: 1, bright: 100, contrast: 100, cropMode: false, cropRect: null };
+  const S = {
+    items: [], current: null, base: null, orig: null,
+    rot: 0, free: 0, zoom: 1, bright: 100, contrast: 100, filter: 'none',
+    cropMode: false, cropRect: null,
+    selected: new Set(), filter: 'all', search: '',
+  };
   const view = $('#view'), vctx = view.getContext('2d'), cropbox = $('#cropbox');
   const listEl = $('#oList'), emptyEl = $('#oEmpty'), editor = $('#oEditor'), nofile = $('#oNofile');
 
@@ -313,91 +582,118 @@ function wireOwner(){
     return c;
   };
 
+  /* ---------- رندر لیست ---------- */
   function renderList(){
     $('#oCount').textContent = S.items.length;
+    const statuses = STORE.statuses;
+    const filtered = S.items.filter(it => {
+      if(S.filter !== 'all' && (statuses[it.id] || 'new') !== S.filter) return false;
+      if(S.search && !it.name.toLowerCase().includes(S.search.toLowerCase())) return false;
+      return true;
+    });
+
     listEl.innerHTML = '';
-    S.items.forEach(it => {
+    if(filtered.length === 0){
+      listEl.innerHTML = '<div style="text-align:center;padding:30px 10px;color:#94a3b8;font-size:13px">موردی یافت نشد</div>';
+      return;
+    }
+
+    filtered.forEach(it => {
+      const st = statuses[it.id] || 'new';
       const div = document.createElement('div');
-      div.className = 'o-item' + (S.current && S.current.id === it.id ? ' sel' : '');
-      if((it.mime||'').indexOf('image/') === 0){
+      div.className = 'o-item' + (S.current && S.current.id === it.id ? ' sel' : '') + (S.selected.has(it.id) ? ' checked' : '');
+
+      const chk = document.createElement('div');
+      chk.className = 'chk';
+      chk.textContent = '✓';
+      chk.onclick = e => {
+        e.stopPropagation();
+        if(S.selected.has(it.id)) S.selected.delete(it.id);
+        else S.selected.add(it.id);
+        renderList();
+      };
+      div.appendChild(chk);
+
+      if((it.mime||'').startsWith('image/')){
         const im = document.createElement('img');
         im.src = it.localBlobUrl || it.url;
         im.loading = 'lazy';
-        im.onerror = ()=>{ im.style.display='none'; };
+        im.onerror = () => { im.style.display = 'none'; };
         div.appendChild(im);
       } else {
         const ph = document.createElement('div');
         ph.className = 'ph'; ph.textContent = '📄';
         div.appendChild(ph);
       }
-      const info = document.createElement('div'); info.className = 'info';
-      const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = it.name;
-      const tm = document.createElement('div'); tm.className = 'tm'; tm.textContent = fmtTime(it.time);
+
+      const info = document.createElement('div');
+      info.className = 'info';
+      const nm = document.createElement('div');
+      nm.className = 'nm';
+      nm.innerHTML = `${esc(it.name)} <span class="o-status ${st}">${st === 'new'?'جدید':st==='printing'?'در چاپ':'چاپ شد'}</span>`;
+      const tm = document.createElement('div');
+      tm.className = 'tm';
+      tm.textContent = fmtTime(it.time) + (it.size ? ' · ' + fmtSize(it.size) : '');
       info.appendChild(nm); info.appendChild(tm);
       div.appendChild(info);
-      div.onclick = ()=> openItem(it);
+
+      div.onclick = () => openItem(it);
       listEl.appendChild(div);
     });
   }
 
+  /* ---------- باز کردن آیتم ---------- */
   function openItem(it){
     S.current = it;
     S.cropMode = false; S.cropRect = null;
     cropbox.style.display = 'none';
     $('#oCrop').classList.remove('on');
+    $('#oStatusSel').value = STORE.statuses[it.id] || 'new';
     renderList();
-    emptyEl.style.display = 'none';
-    editor.style.display = 'none';
-    nofile.style.display = 'none';
+    emptyEl.classList.add('hide');
+    editor.classList.add('hide');
+    nofile.classList.add('hide');
 
-    if((it.mime||'').indexOf('image/') !== 0){
-      nofile.style.display = 'block';
+    if(!(it.mime||'').startsWith('image/')){
+      nofile.classList.remove('hide');
       $('#oNofileTxt').textContent = it.name || 'فایل';
       $('#oOpenRaw').href = it.localBlobUrl || it.url;
-      $('#oPrintRaw').onclick = ()=>{
+      $('#oPrintRaw').onclick = () => {
         const w = window.open(it.localBlobUrl || it.url, '_blank');
-        if(w) setTimeout(()=>{ try{ w.print(); }catch(e){} }, 900);
+        if(w) setTimeout(() => { try{ w.print(); }catch(e){} }, 900);
       };
       return;
     }
 
-    editor.style.display = 'flex';
+    editor.classList.remove('hide');
     const im = new Image();
-    if(it.localBlobUrl){
-      im.src = it.localBlobUrl;
-    } else {
-      im.crossOrigin = 'anonymous';
-      im.src = it.url;
-    }
-    im.onload = ()=>{
+    if(it.localBlobUrl) im.src = it.localBlobUrl;
+    else { im.crossOrigin = 'anonymous'; im.src = it.url; }
+    im.onload = () => {
       const maxDim = 3200;
       const w = im.naturalWidth, h = im.naturalHeight;
-      const scale = Math.min(1, maxDim / Math.max(w, h));
+      const sc = Math.min(1, maxDim / Math.max(w, h));
       const c = document.createElement('canvas');
-      c.width  = Math.max(1, Math.round(w * scale));
-      c.height = Math.max(1, Math.round(h * scale));
+      c.width = Math.max(1, Math.round(w * sc));
+      c.height = Math.max(1, Math.round(h * sc));
       c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
-      S.orig = c;
-      S.base = cloneCanvas(c);
+      S.orig = c; S.base = cloneCanvas(c);
       resetTransforms();
       render();
     };
-    im.onerror = ()=>{
-      editor.style.display = 'none';
-      nofile.style.display = 'block';
-      $('#oNofileTxt').textContent = 'خطا در بارگذاری تصویر';
+    im.onerror = () => {
+      editor.classList.add('hide');
+      nofile.classList.remove('hide');
+      $('#oNofileTxt').textContent = 'خطا در بارگذاری';
       $('#oOpenRaw').href = it.localBlobUrl || it.url;
-      $('#oPrintRaw').onclick = ()=>{
-        const w = window.open(it.localBlobUrl || it.url, '_blank');
-        if(w) setTimeout(()=>{ try{ w.print(); }catch(e){} }, 900);
-      };
     };
   }
 
   function resetTransforms(){
-    S.rot = 0; S.free = 0; S.zoom = 1; S.bright = 100; S.contrast = 100;
+    S.rot = 0; S.free = 0; S.zoom = 1; S.bright = 100; S.contrast = 100; S.filter = 'none';
     $('#sAngle').value = 0; $('#sZoom').value = 1;
     $('#sBright').value = 100; $('#sContrast').value = 100;
+    $('#oFilter').value = 'none';
   }
 
   function renderFull(){
@@ -415,7 +711,8 @@ function wireOwner(){
     ctx.translate(outW/2, outH/2);
     ctx.rotate(angle);
     ctx.scale(S.zoom, S.zoom);
-    ctx.filter = `brightness(${S.bright}%) contrast(${S.contrast}%)`;
+    const filt = `brightness(${S.bright}%) contrast(${S.contrast}%) ${S.filter === 'none' ? '' : S.filter}`;
+    ctx.filter = filt;
     ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(b, -w/2, -h/2);
     return c;
@@ -425,61 +722,72 @@ function wireOwner(){
     const full = renderFull(); if(!full) return;
     const maxDim = 1400;
     const s = Math.min(1, maxDim / Math.max(full.width, full.height));
-    view.width  = Math.max(1, Math.round(full.width * s));
+    view.width = Math.max(1, Math.round(full.width * s));
     view.height = Math.max(1, Math.round(full.height * s));
     vctx.clearRect(0, 0, view.width, view.height);
     vctx.drawImage(full, 0, 0, view.width, view.height);
   }
 
-  $('#oRotL').onclick = ()=>{ S.rot -= 90; render(); };
-  $('#oRotR').onclick = ()=>{ S.rot += 90; render(); };
-  $('#sAngle').oninput    = e=>{ S.free = parseFloat(e.target.value); render(); };
-  $('#sZoom').oninput     = e=>{ S.zoom = parseFloat(e.target.value); render(); };
-  $('#sBright').oninput   = e=>{ S.bright = parseFloat(e.target.value); render(); };
-  $('#sContrast').oninput = e=>{ S.contrast = parseFloat(e.target.value); render(); };
+  /* ---------- کنترل‌ها ---------- */
+  $('#oRotL').onclick = () => { S.rot -= 90; render(); };
+  $('#oRotR').onclick = () => { S.rot += 90; render(); };
+  $('#sAngle').oninput    = e => { S.free = parseFloat(e.target.value); render(); };
+  $('#sZoom').oninput     = e => { S.zoom = parseFloat(e.target.value); render(); };
+  $('#sBright').oninput   = e => { S.bright = parseFloat(e.target.value); render(); };
+  $('#sContrast').oninput = e => { S.contrast = parseFloat(e.target.value); render(); };
+  $('#oFilter').onchange  = e => { S.filter = e.target.value; render(); };
 
-  $('#oApply').onclick = ()=>{
+  $('#oApply').onclick = () => {
     const full = renderFull(); if(!full) return;
-    S.base = full; resetTransforms(); render(); toast('تغییرات اعمال شد');
+    S.base = full; resetTransforms(); render();
+    toast('تغییرات اعمال شد', 'ok');
   };
-  $('#oReset').onclick = ()=>{
+  $('#oReset').onclick = () => {
     if(!S.orig) return;
     S.base = cloneCanvas(S.orig); resetTransforms(); render();
     toast('به تصویر اصلی برگشت');
   };
 
-  // ---- Crop ----
-  $('#oCrop').onclick = ()=>{
+  $('#oStatusSel').onchange = e => {
+    if(!S.current) return;
+    const s = STORE.statuses;
+    s[S.current.id] = e.target.value;
+    STORE.statuses = s;
+    renderList();
+    toast('وضعیت به‌روز شد', 'ok');
+  };
+
+  /* ---------- Crop ---------- */
+  $('#oCrop').onclick = () => {
     S.cropMode = !S.cropMode;
     $('#oCrop').classList.toggle('on', S.cropMode);
     if(!S.cropMode){ cropbox.style.display = 'none'; S.cropRect = null; }
-    else { toast('روی تصویر بکشید تا کادر برش ساخته شود'); }
+    else toast('روی تصویر بکشید تا کادر برش ساخته شود');
   };
 
-  let draggingCSS = false, startX = 0, startY = 0;
-  const posCSS = e => {
+  let dragging = false, sx = 0, sy = 0;
+  const posOf = e => {
     const r = view.getBoundingClientRect();
     const p = e.touches ? e.touches[0] : e;
-    return { x: Math.max(0, Math.min(r.width,  p.clientX - r.left)),
-             y: Math.max(0, Math.min(r.height, p.clientY - r.top )) };
+    return { x: Math.max(0, Math.min(r.width, p.clientX - r.left)),
+             y: Math.max(0, Math.min(r.height, p.clientY - r.top)) };
   };
   function startDrag(e){
     if(!S.cropMode) return;
-    e.preventDefault(); draggingCSS = true;
-    const p = posCSS(e); startX = p.x; startY = p.y;
+    e.preventDefault(); dragging = true;
+    const p = posOf(e); sx = p.x; sy = p.y;
     S.cropRect = { x:p.x, y:p.y, w:0, h:0 }; updateCropBox();
   }
   function moveDrag(e){
-    if(!draggingCSS) return;
+    if(!dragging) return;
     e.preventDefault();
-    const p = posCSS(e);
-    S.cropRect = { x: Math.min(startX,p.x), y: Math.min(startY,p.y),
-                   w: Math.abs(p.x-startX), h: Math.abs(p.y-startY) };
+    const p = posOf(e);
+    S.cropRect = { x: Math.min(sx,p.x), y: Math.min(sy,p.y), w: Math.abs(p.x-sx), h: Math.abs(p.y-sy) };
     updateCropBox();
   }
   function endDrag(){
-    if(!draggingCSS) return;
-    draggingCSS = false;
+    if(!dragging) return;
+    dragging = false;
     if(!S.cropRect || S.cropRect.w < 12 || S.cropRect.h < 12){
       S.cropRect = null; cropbox.style.display = 'none'; return;
     }
@@ -495,9 +803,9 @@ function wireOwner(){
     const full = renderFull();
     if(!full || !S.cropRect) return;
     const r = view.getBoundingClientRect();
-    const sx = full.width / r.width, sy = full.height / r.height;
-    let cx = Math.round(S.cropRect.x*sx), cy = Math.round(S.cropRect.y*sy);
-    let cw = Math.round(S.cropRect.w*sx), ch = Math.round(S.cropRect.h*sy);
+    const sclX = full.width / r.width, sclY = full.height / r.height;
+    let cx = Math.round(S.cropRect.x*sclX), cy = Math.round(S.cropRect.y*sclY);
+    let cw = Math.round(S.cropRect.w*sclX), ch = Math.round(S.cropRect.h*sclY);
     if(cw < 5 || ch < 5) return;
     cx = Math.max(0, Math.min(full.width-1, cx));
     cy = Math.max(0, Math.min(full.height-1, cy));
@@ -509,7 +817,7 @@ function wireOwner(){
     S.cropMode = false; S.cropRect = null;
     $('#oCrop').classList.remove('on');
     cropbox.style.display = 'none';
-    render(); toast('برش انجام شد');
+    render(); toast('برش انجام شد', 'ok');
   }
   view.addEventListener('mousedown', startDrag);
   window.addEventListener('mousemove', moveDrag);
@@ -518,48 +826,140 @@ function wireOwner(){
   window.addEventListener('touchmove', moveDrag, {passive:false});
   window.addEventListener('touchend', endDrag);
 
-  // ---- Print ----
-  $('#oPrint').onclick = ()=>{
+  /* ---------- Print ---------- */
+  $('#oPrint').onclick = () => {
     const full = renderFull(); if(!full) return;
-    const url = full.toDataURL('image/jpeg', 0.95);
-    const mode = $('#oPrintMode').value;
-    const imgCss = mode === 'fill'
-      ? 'width:100%;height:100%;object-fit:contain;'
-      : 'max-width:100%;max-height:100%;';
-    const doc = '<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>چاپ</title>'
-      + '<style>@page{size:A4;margin:8mm}html,body{margin:0;padding:0;height:100%}'
-      + 'body{display:flex;align-items:center;justify-content:center}'
-      + 'img{' + imgCss + '}</style></head><body>'
-      + '<img src="' + url + '" onload="setTimeout(function(){window.print();},250)">'
-      + '</body></html>';
+    const url = full.toDataURL('image/jpeg', 0.94);
+    const doc = `<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><title>چاپ</title>
+      <style>@page{size:A4;margin:8mm}html,body{margin:0;padding:0;height:100%}
+      body{display:flex;align-items:center;justify-content:center}
+      img{max-width:100%;max-height:100%;object-fit:contain}</style></head>
+      <body><img src="${url}" onload="setTimeout(()=>window.print(),250)"></body></html>`;
     const w = window.open('', '_blank');
+    if(!w){ toast('پاپ‌آپ را فعال کنید', 'err'); return; }
     w.document.open(); w.document.write(doc); w.document.close();
   };
 
-  // ---- Download ----
-  $('#oDownload').onclick = ()=>{
+  /* ---------- Download ---------- */
+  $('#oDownload').onclick = () => {
     const full = renderFull(); if(!full) return;
     const a = document.createElement('a');
-    a.href = full.toDataURL('image/jpeg', 0.95);
-    const name = S.current ? (S.current.name || 'file') : 'file';
-    a.download = name + '.jpg';
+    a.href = full.toDataURL('image/jpeg', 0.94);
+    a.download = (S.current ? (S.current.name || 'file') : 'file') + '.jpg';
     a.click();
   };
 
-  // ---- Delete ----
-  $('#oDel').onclick = ()=>{
+  /* ---------- Delete ---------- */
+  $('#oDel').onclick = () => {
     if(!S.current) return;
     if(!confirm('این مورد از لیست حذف شود؟')) return;
     S.items = S.items.filter(x => x.id !== S.current.id);
+    const st = STORE.statuses; delete st[S.current.id]; STORE.statuses = st;
+    S.selected.delete(S.current.id);
     S.current = null; S.base = null; S.orig = null;
-    editor.style.display = 'none'; emptyEl.style.display = 'block';
-    renderList(); toast('از لیست حذف شد');
+    editor.classList.add('hide'); emptyEl.classList.remove('hide');
+    renderList(); toast('حذف شد');
   };
 
-  // ---- Load past + live ----
+  /* ---------- Batch print ---------- */
+  $('#oBatch').onclick = () => {
+    if(S.selected.size === 0){ toast('ابتدا موارد را با ✅ علامت بزنید', 'err'); return; }
+    $('#batchModal').classList.add('on');
+  };
+  $('#bmGo').onclick = async () => {
+    const perPage = parseInt($('#bmPerPage').value);
+    const copies = Math.max(1, parseInt($('#bmCopies').value) || 1);
+    const gap = parseInt($('#bmGap').value);
+    $('#batchModal').classList.remove('on');
+
+    const items = S.items.filter(x => S.selected.has(x.id));
+    const itemsExpanded = [];
+    items.forEach(it => { for(let i = 0; i < copies; i++) itemsExpanded.push(it); });
+
+    toast('در حال آماده‌سازی...', 'ok');
+
+    const canvases = [];
+    for(const it of itemsExpanded){
+      try{
+        const c = await getCanvasForItem(it);
+        if(c) canvases.push(c);
+      }catch(e){ console.warn(e); }
+    }
+    if(canvases.length === 0){ toast('خطا در آماده‌سازی', 'err'); return; }
+
+    const cols = perPage === 1 ? 1 : perPage === 2 ? 2 : perPage === 4 ? 2 : 3;
+    const rows = Math.ceil(perPage / cols);
+    const pages = [];
+    for(let i = 0; i < canvases.length; i += perPage){
+      const chunk = canvases.slice(i, i + perPage);
+      const cells = chunk.map(c => `<div class="cell"><img src="${c.toDataURL('image/jpeg', 0.9)}"></div>`).join('');
+      pages.push(`<div class="page">${cells}</div>`);
+    }
+    const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>چاپ دسته‌ای</title>
+      <style>
+        @page{size:A4;margin:5mm}
+        *{box-sizing:border-box}
+        html,body{margin:0;padding:0}
+        .page{display:grid;grid-template-columns:repeat(${cols},1fr);grid-template-rows:repeat(${rows},1fr);
+              gap:${gap}mm;width:200mm;height:287mm;page-break-after:always}
+        .page:last-child{page-break-after:auto}
+        .cell{display:flex;align-items:center;justify-content:center;overflow:hidden}
+        .cell img{max-width:100%;max-height:100%;object-fit:contain}
+        @media screen{body{background:#ccc;padding:10px}.page{background:#fff;box-shadow:0 0 8px rgba(0,0,0,.2);margin:0 auto 10px}}
+      </style></head><body>
+      ${pages.join('')}
+      <script>window.onload=()=>setTimeout(()=>window.print(),350);<\/script>
+      </body></html>`;
+    const w = window.open('', '_blank');
+    if(!w){ toast('پاپ‌آپ را فعال کنید', 'err'); return; }
+    w.document.open(); w.document.write(html); w.document.close();
+  };
+
+  async function getCanvasForItem(it){
+    if(S.current && S.current.id === it.id && S.base) return renderFull();
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      if(it.localBlobUrl) im.src = it.localBlobUrl;
+      else { im.crossOrigin = 'anonymous'; im.src = it.url; }
+      im.onload = () => {
+        const maxDim = 2000;
+        const w = im.naturalWidth, h = im.naturalHeight;
+        const sc = Math.min(1, maxDim / Math.max(w, h));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(w * sc));
+        c.height = Math.max(1, Math.round(h * sc));
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        resolve(c);
+      };
+      im.onerror = reject;
+    });
+  }
+
+  /* ---------- Search & Filter ---------- */
+  $('#oSearch').oninput = e => { S.search = e.target.value; renderList(); };
+  $$('.o-chip').forEach(chip => {
+    chip.onclick = () => {
+      $$('.o-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      S.filter = chip.dataset.filter;
+      renderList();
+    };
+  });
+
+  /* ---------- Beep toggle ---------- */
+  $('#oBeep').onclick = () => {
+    const s = STORE.settings;
+    s.beep = !s.beep;
+    STORE.settings = s;
+    $('#oBeep').textContent = s.beep ? '🔔' : '🔕';
+    $('#oBeep').classList.toggle('on', s.beep);
+    toast(s.beep ? 'صدای اعلان روشن شد' : 'صدای اعلان خاموش شد');
+  };
+
+  /* ---------- Load history + live ---------- */
   async function loadPast(){
     try{
-      const r = await fetch(CONFIG.NTFY + '/' + CONFIG.TOPIC + '/json?poll=1&since=12h', {cache:'no-store'});
+      const r = await fetch(`${CONFIG.NTFY}/${CONFIG.TOPIC}/json?poll=1&since=12h`, {cache:'no-store'});
       if(!r.ok) return;
       const text = await r.text();
       text.trim().split('\n').filter(Boolean).forEach(line => {
@@ -571,9 +971,9 @@ function wireOwner(){
   let es = null;
   function connect(){
     if(es) es.close();
-    es = new EventSource(CONFIG.NTFY + '/' + CONFIG.TOPIC + '/sse');
-    es.onopen  = ()=> $('#oDot').classList.add('on');
-    es.onerror = ()=> $('#oDot').classList.remove('on');
+    es = new EventSource(`${CONFIG.NTFY}/${CONFIG.TOPIC}/sse`);
+    es.onopen = () => $('#oDot').classList.add('on');
+    es.onerror = () => $('#oDot').classList.remove('on');
     es.onmessage = e => {
       try{
         const d = JSON.parse(e.data);
@@ -583,43 +983,65 @@ function wireOwner(){
   }
 
   async function handleMessage(m){
-    if(!m || m.event !== 'message') return;
-    if(!m.attachment || !m.attachment.url) return;
+    if(!m || !m.attachment || !m.attachment.url) return;
     if(S.items.some(x => x.id === m.id)) return;
 
-    let name = m.title || '';
-    if(name.indexOf('b64:') === 0) name = b64dec(name.slice(4));
-    if(!name) name = 'مهمان';
+    let name = 'مهمان', size = 0, type = '';
+    try{
+      const meta = JSON.parse(m.message || '{}');
+      name = meta.name || m.title || 'مهمان';
+      size = meta.size || m.attachment.size || 0;
+      type = meta.type || m.attachment.type || '';
+    }catch(e){
+      name = m.title || 'مهمان';
+      size = m.attachment.size || 0;
+      type = m.attachment.type || '';
+    }
 
     const item = {
-      id: m.id, name: name,
-      time: m.time || Math.floor(Date.now()/1000),
+      id: m.id, name, time: m.time || Math.floor(Date.now()/1000),
       url: m.attachment.url,
-      mime: m.attachment.type || 'application/octet-stream',
-      size: m.attachment.size || 0,
-      localBlobUrl: null,
+      mime: type || m.attachment.type || 'application/octet-stream',
+      size, localBlobUrl: null,
     };
+
     try{
       const r = await fetch(item.url, {cache:'no-store'});
       if(r.ok) item.localBlobUrl = URL.createObjectURL(await r.blob());
-    }catch(e){ console.warn('attachment fetch failed', e); }
+    }catch(e){ console.warn('fetch failed:', e); }
 
     S.items.unshift(item);
     renderList();
-    toast('📥 فایل جدید از: ' + name);
+    if(STORE.settings.beep) beep();
+    toast('📥 فایل جدید از: ' + name, 'ok');
   }
 
   $('#oRefresh').onclick = loadPast;
-  $('#oLogout').onclick = ()=>{ location.hash = ''; location.reload(); };
+  $('#oLogout').onclick = () => { location.hash = ''; location.reload(); };
 
+  /* ---------- Keyboard shortcuts ---------- */
+  document.addEventListener('keydown', e => {
+    if(e.target.matches('input,textarea,select')) return;
+    if(S.items.length === 0) return;
+    const idx = S.current ? S.items.findIndex(x => x.id === S.current.id) : -1;
+    if(e.key === 'ArrowLeft' && idx < S.items.length - 1){ openItem(S.items[idx + 1]); }
+    else if(e.key === 'ArrowRight' && idx > 0){ openItem(S.items[idx - 1]); }
+    else if(e.key === 'Delete' && S.current){ $('#oDel').click(); }
+    else if((e.ctrlKey || e.metaKey) && e.key === 'p'){ e.preventDefault(); if(S.current) $('#oPrint').click(); }
+    else if(e.key === 'r' || e.key === 'R'){ if(S.current) $('#oRotR').click(); }
+    else if(e.key === 'c' || e.key === 'C'){ if(S.current) $('#oCrop').click(); }
+    else if(e.key === 'Escape'){ S.cropMode = false; cropbox.style.display = 'none'; $('#oCrop').classList.remove('on'); }
+  });
+
+  /* ---------- Init ---------- */
   renderList();
   loadPast();
   connect();
 }
 
-// ============================================
-//  LOGIN
-// ============================================
+/* =====================================================
+   LOGIN
+   ===================================================== */
 function renderLogin(){
   document.title = 'ورود به پنل';
   $('#app').innerHTML = `
@@ -632,9 +1054,8 @@ function renderLogin(){
         <button class="c-btn pri" id="go">ورود</button>
       </div>
     </div>
-    <div class="toast" id="toast"></div>
   `;
-  const check = ()=>{
+  const check = () => {
     if($('#pwd').value === CONFIG.OWNER_PASSWORD){
       sessionStorage.setItem('owner_ok', '1');
       renderOwner();
@@ -646,10 +1067,13 @@ function renderLogin(){
   $('#pwd').onkeydown = e => { if(e.key === 'Enter') check(); };
 }
 
-// ============================================
-//  BOOT
-// ============================================
+/* =====================================================
+   BOOT
+   ===================================================== */
 function boot(){
+  if(CONFIG.TOPIC === 'printshop-a7x9k2m3q8v1' || CONFIG.OWNER_PASSWORD === 'admin123'){
+    console.warn('⚠️ لطفاً CONFIG.TOPIC و CONFIG.OWNER_PASSWORD را تغییر دهید!');
+  }
   if(isOwnerMode()){
     if(sessionStorage.getItem('owner_ok') === '1') renderOwner();
     else renderLogin();
@@ -657,8 +1081,8 @@ function boot(){
     renderCustomer();
   }
 }
-window.addEventListener('hashchange', ()=> location.reload());
 boot();
+window.addEventListener('hashchange', () => location.reload());
 </script>
 </body>
 </html>
